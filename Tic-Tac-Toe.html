@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>TicTacPlay – Play Anywhere, Anytime</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Montserrat", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-white min-h-screen flex flex-col items-center justify-start p-4">
+
+    <!-- Landing Section -->
+    <div class="max-w-6xl w-full bg-white border border-gray-300 rounded-md shadow-md flex flex-col md:flex-row items-center md:items-start mt-6" style="height: 600px;">
+      <div class="flex-1 flex flex-col justify-between px-10 py-8">
+        <div>
+          <div class="mb-6">
+            <img alt="Logo" class="w-6 h-6 mb-4" src="https://storage.googleapis.com/a1aa/image/5c7b23d1-abad-400f-9699-51fb8c000dca.jpg"/>
+            <span class="text-xs text-gray-700 font-normal uppercase tracking-widest">Welcome to</span>
+          </div>
+          <h1 class="text-black font-extralight leading-tight" style="font-size: 3.2rem; line-height: 1.1;">
+            <span class="font-bold text-[#8DC63F]">TicTacPlay</span><br/>
+            Play Anywhere,<br/>
+            Anytime
+          </h1>
+          <p class="text-xs text-gray-700 mt-3 font-normal leading-relaxed">
+            To build a Tic-Tac-Toe web application, we use HTML, CSS, and JavaScript. By implementing functions to handle user clicks, track game state, and check for winning conditions, users can enjoy an interactive experience by playing against each other or an AI — aiming to align three markers in a row to win the game.
+          </p>
+        </div>
+        <a href="#game" class="mt-10 w-28 h-8 rounded-full bg-[#8DC63F] text-black text-xs font-semibold flex items-center justify-center hover:bg-[#76b32c]">
+          Get Started
+        </a>
+      </div>
+      <div class="flex-1 flex items-center justify-center p-4">
+        <img alt="Tic-Tac-Toe Game" class="max-h-[580px] object-contain" src="https://storage.googleapis.com/a1aa/image/98de76b6-fd20-4ab1-5a5c-d9f001ab2ee2.jpg" />
+      </div>
+    </div>
+
+    <!-- Game Section -->
+    <section id="game" class="mt-20 w-full max-w-md text-center">
+      <h2 class="text-2xl font-bold text-[#8DC63F] mb-6">TicTacToe Game</h2>
+      <div id="status" class="mb-4 text-lg font-semibold text-gray-700">Player X's turn</div>
+      <div class="grid grid-cols-3 gap-2 max-w-xs mx-auto">
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+        <div class="cell w-24 h-24 border border-gray-400 flex items-center justify-center text-3xl cursor-pointer" data-cell></div>
+      </div>
+      <button id="restartBtn" class="mt-6 px-4 py-2 bg-[#8DC63F] text-white font-semibold rounded hover:bg-[#76b32c]">Restart Game</button>
+    </section>
+
+    <script>
+      const cells = document.querySelectorAll('[data-cell]');
+      const statusText = document.getElementById('status');
+      const restartBtn = document.getElementById('restartBtn');
+      let currentPlayer = 'X';
+      let gameActive = true;
+
+      const winningCombinations = [
+        [0,1,2], [3,4,5], [6,7,8], // rows
+        [0,3,6], [1,4,7], [2,5,8], // cols
+        [0,4,8], [2,4,6]           // diagonals
+      ];
+
+      function checkWin() {
+        return winningCombinations.some(combination => {
+          return combination.every(index => {
+            return cells[index].textContent === currentPlayer;
+          });
+        });
+      }
+
+      function checkDraw() {
+        return [...cells].every(cell => cell.textContent);
+      }
+
+      function handleClick(e) {
+        const cell = e.target;
+        if (cell.textContent || !gameActive) return;
+
+        cell.textContent = currentPlayer;
+
+        if (checkWin()) {
+          statusText.textContent = `Player ${currentPlayer} wins!`;
+          gameActive = false;
+        } else if (checkDraw()) {
+          statusText.textContent = "It's a draw!";
+          gameActive = false;
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          statusText.textContent = `Player ${currentPlayer}'s turn`;
+        }
+      }
+
+      function restartGame() {
+        cells.forEach(cell => cell.textContent = '');
+        currentPlayer = 'X';
+        gameActive = true;
+        statusText.textContent = "Player X's turn";
+      }
+
+      cells.forEach(cell => cell.addEventListener('click', handleClick));
+      restartBtn.addEventListener('click', restartGame);
+    </script>
+
+  </body>
+</html>
